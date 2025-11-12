@@ -1,6 +1,7 @@
 # 🍺 Guinness Selfie Generator - Streamlit App
 
 Generate legendary selfies with Messi or Ronaldo while holding a pint of Guinness!
+Link to access it: https://guinnessapp-hbwaslwcp6atedsvjr7aab.streamlit.app/
 
 ## 🚀 Quick Start
 

@@ -25,17 +25,40 @@ st.markdown("Generate a legendary selfie with Messi or Ronaldo while holding a p
 # Sidebar for configuration
 st.sidebar.header("⚙️ Configuration")
 
-# API Key input
-api_key = st.sidebar.text_input(
-    "OpenRouter API Key",
-    type="password",
-    help="Get your API key from https://openrouter.ai/keys"
-)
+# Get API Key from Streamlit secrets or environment variables
+try:
+    api_key = st.secrets["OPENROUTER_API_KEY"]
+except (KeyError, FileNotFoundError):
+    try:
+        import os
+        api_key = os.environ.get("OPENROUTER_API_KEY")
+        if not api_key:
+            raise ValueError("API key not found")
+    except:
+        st.error("❌ OpenRouter API Key not configured!")
+        st.info("""
+        **To configure your API key:**
+        
+        **For Streamlit Cloud:**
+        1. Go to your app settings
+        2. Click on "Secrets"
+        3. Add: `OPENROUTER_API_KEY = "your-api-key-here"`
+        
+        **For Local Development:**
+        1. Create `.streamlit/secrets.toml` file
+        2. Add: `OPENROUTER_API_KEY = "your-api-key-here"`
+        
+        **Or use environment variable:**
+        ```bash
+        export OPENROUTER_API_KEY="your-api-key-here"
+        streamlit run guinness_selfie_streamlit.py
+        ```
+        
+        Get your API key from: https://openrouter.ai/keys
+        """)
+        st.stop()
 
-if not api_key:
-    st.sidebar.warning("⚠️ Please enter your OpenRouter API key to continue")
-    st.info("👈 Enter your OpenRouter API key in the sidebar to get started!\n\nGet one at: https://openrouter.ai/keys")
-    st.stop()
+st.sidebar.success("✅ API Key Loaded")
 
 # Footballer selection
 footballer = st.sidebar.selectbox(
@@ -113,9 +136,7 @@ with generate_col2:
     )
 
 if generate_button:
-    if not api_key:
-        st.error("❌ Please enter your OpenRouter API key in the sidebar!")
-    elif uploaded_file is None:
+    if uploaded_file is None:
         st.error("❌ Please upload a photo first!")
     else:
         # Build footballer description
@@ -279,3 +300,4 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
